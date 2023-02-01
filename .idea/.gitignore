@@ -6,6 +6,4 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
-/target/
-/111/
-/1/
+*/target/**
