@@ -106,7 +106,6 @@ public class ComplexNumber {
      * @param another комплексное число
      * @return частное двух комплексных чисел
      */
-    //деление
     ComplexNumber div(ComplexNumber another){
         if (another.real * another.real + another.imag * another.imag == 0)
             throw new RuntimeException("Нельзя делить на 0");
@@ -135,7 +134,7 @@ public class ComplexNumber {
      * @return строку с алгебраическим видом числа
      */
     String algebraicForm() {
-        if (imag > 0 && real == 0) return String.format("%fi", imag);
+        if (imag != 0 && real == 0) return String.format("%fi", imag);
         if (imag > 0) return String.format("%f+%fi", real, imag);
         if (imag == 0) return String.format("%f", real);
         return String.format("%f%fi", real, imag);

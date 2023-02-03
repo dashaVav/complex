@@ -1,6 +1,5 @@
 package org.example;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 /** класс работает как с комплексными, как и с действительными числами */
 
@@ -28,42 +27,17 @@ public class Matrix{
     }
 
     /**
-     * конструктор создающий матрицу row x column, ввод самой матрицы
-     * @param row количество строк в матрице
-     * @param column количество столбцов в матрице
+     * @return матрику как строку
      */
-    Matrix(int row, int column) {
-        this.column = column;
-        this.row = row;
-        inputMatrix();
-    }
-
-    /**
-     * ввод матрицы вида
-     * х11 х12
-     * х21 х22
-     */
-     private void inputMatrix() {
-        System.out.println("Введите матрицу:");
-        matrix = new ArrayList<> ();
-        for (int i = 0; i < row; i++) {
-            var mas = new ArrayList<ComplexNumber>();
-            String[] numbers = new Scanner(System.in).nextLine().split(" ");
-            for (int j = 0; j < column; j++){
-                mas.add(new ComplexNumber(numbers[j]));
-            }
-            matrix.add(mas);
-        }
-    }
-
-    /** вывод матрицы */
-    void printMatrix() {
+    StringBuilder MatrixAsStr() {
+        StringBuilder str = new StringBuilder();
         for (int i = 0; i < row; i++){
             for (ComplexNumber n : matrix.get(i)) {
-                System.out.print(n.algebraicForm() + " ");
+                str.append(n.algebraicForm()).append(" ");
             }
-            System.out.println();
+            str.append('\n');
         }
+        return str;
     }
 
     /**

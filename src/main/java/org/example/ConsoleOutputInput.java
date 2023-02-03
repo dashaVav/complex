@@ -1,5 +1,6 @@
 package org.example;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ConsoleOutputInput {
@@ -11,21 +12,27 @@ public class ConsoleOutputInput {
                 2 - Матрицы""");
         int n = (new Scanner(System.in)).nextInt();
         if (n == 1) {
-            ComplexNumber();
+            this.ComplexNumber();
         }
         else if (n == 2) {
-            Matrix();
+            this.Matrix();
         }
         else {
             System.out.print("Команда не найдена!");
         }
     }
 
+    /**
+     * @return введенное комплексное чилсо
+     */
     private String inputNumber(){
         System.out.println("Введи число вида a+bi/a/bi:");
         return (new Scanner(System.in)).nextLine();
     }
 
+    /**
+     * консольный интерфейс для работы с комплексными числами
+     */
     private void ComplexNumber() {
         var number = new ComplexNumber(this.inputNumber());
         System.out.print("""
@@ -40,33 +47,49 @@ public class ConsoleOutputInput {
             8 - вывести в алгебраическом виде
             """);
         int n = (new Scanner(System.in)).nextInt();
+        System.out.println("Результат:");
         switch (n) {
-            case (1) -> System.out.println("Результат:\n" + new ComplexNumber(number.getReal()).algebraicForm());
-            case (2) -> System.out.println("Результат:\n" + new ComplexNumber(number.getImag()).algebraicForm());
-            case (3) -> System.out.println("Результат:\n" +
-                    number.add(new ComplexNumber(this.inputNumber())).algebraicForm());
-            case (4) -> System.out.println("Результат:\n" +
-                    number.decr(new ComplexNumber(this.inputNumber())).algebraicForm());
-            case (5) -> System.out.println("Результат:\n" +
-                    number.mul(new ComplexNumber(this.inputNumber())).algebraicForm());
-            case (6) -> System.out.println("Результат:\n" +
-                    number.div(new ComplexNumber(this.inputNumber())).algebraicForm());
-            case (7) -> System.out.println("Результат:\n" + number.trigonometricForm());
-            case (8) -> System.out.println("Результат:\n" + number.algebraicForm());
+            case (1) -> System.out.println(new ComplexNumber(number.getReal()).algebraicForm());
+            case (2) -> System.out.println(new ComplexNumber(number.getImag()).algebraicForm());
+            case (3) -> System.out.println(number.add(new ComplexNumber(this.inputNumber())).algebraicForm());
+            case (4) -> System.out.println(number.decr(new ComplexNumber(this.inputNumber())).algebraicForm());
+            case (5) -> System.out.println(number.mul(new ComplexNumber(this.inputNumber())).algebraicForm());
+            case (6) -> System.out.println(number.div(new ComplexNumber(this.inputNumber())).algebraicForm());
+            case (7) -> System.out.println(number.trigonometricForm());
+            case (8) -> System.out.println(number.algebraicForm());
             default -> System.out.println("Команда не найдена!");
         }
     }
 
-    Matrix inputMatrix() {
+    /**
+     * ввод матрицы вида n х m
+     * х11 х12
+     * х21 х22
+     * @return введенную матрицу
+     */
+    private Matrix inputMatrix() {
         System.out.println("Введите количесто строк в матрице");
         var n = (new Scanner(System.in)).nextInt();
 
         System.out.println("Введите количесто столбцов в матрице");
         var m = (new Scanner(System.in)).nextInt();
 
-        return new Matrix(n, m);
+        System.out.println("Введите матрицу:");
+            var mtrx = new ArrayList<ArrayList<ComplexNumber>> ();
+            for (int i = 0; i < n; i++) {
+                var mas = new ArrayList<ComplexNumber>();
+                String[] numbers = new Scanner(System.in).nextLine().split(" ");
+                for (int j = 0; j < n; j++) {
+                    mas.add(new ComplexNumber(numbers[j]));
+                }
+                mtrx.add(mas);
+            }
+        return new Matrix(n, m, mtrx);
     }
 
+    /**
+     * консольный интерфейс для работы с матрицами
+     */
     private void Matrix() {
         var mtrx = inputMatrix();
         System.out.print("""
@@ -80,38 +103,17 @@ public class ConsoleOutputInput {
             7 - найти детрминант
             """);
         int n = (new Scanner(System.in)).nextInt();
+        System.out.println("Результат:");
         switch (n) {
-            case (1) -> {
-                System.out.println("Результат:");
-                mtrx.printMatrix();
-            }
-            case (2) -> {
-                System.out.println("Результат:");
-                mtrx.mulNumber(new ComplexNumber(inputNumber())).printMatrix();
-            }
-            case (3) -> {
-                System.out.println("Результат:");
-                mtrx.addMatrix(inputMatrix()).printMatrix();
-            }
-            case (4) -> {
-                System.out.println("Результат:");
-                mtrx.decrMatrix(inputMatrix()).printMatrix();
-            }
-            case (5) -> {
-                System.out.println("Результат:");
-                mtrx.mulMatrix(inputMatrix()).printMatrix();
-            }
-            case (6) -> {
-                System.out.println("Результат:");
-                mtrx.transposedMatrix().printMatrix();
-            }
-            case (7) -> {
-                System.out.println("Результат:");
-                System.out.println(mtrx.det().algebraicForm());
-            }
+            case (1) -> System.out.println(mtrx.MatrixAsStr());
+            case (2) -> System.out.println(mtrx.mulNumber(new ComplexNumber(inputNumber())).MatrixAsStr());
+            case (3) -> System.out.println(mtrx.addMatrix(inputMatrix()).MatrixAsStr());
+            case (4) -> System.out.println(mtrx.decrMatrix(inputMatrix()).MatrixAsStr());
+            case (5) -> System.out.println(mtrx.mulMatrix(inputMatrix()).MatrixAsStr());
+            case (6) -> System.out.println(mtrx.transposedMatrix().MatrixAsStr());
+            case (7) -> System.out.println(mtrx.det().algebraicForm());
             default -> System.out.println("Команда не найдена!");
         }
     }
-
 
 }
