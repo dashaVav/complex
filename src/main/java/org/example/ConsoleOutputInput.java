@@ -79,7 +79,7 @@ public class ConsoleOutputInput {
             for (int i = 0; i < n; i++) {
                 var mas = new ArrayList<ComplexNumber>();
                 String[] numbers = new Scanner(System.in).nextLine().split(" ");
-                for (int j = 0; j < n; j++) {
+                for (int j = 0; j < m; j++) {
                     mas.add(new ComplexNumber(numbers[j]));
                 }
                 mtrx.add(mas);
