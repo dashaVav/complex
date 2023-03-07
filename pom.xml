@@ -31,7 +31,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>${javafx.maven.plugin.version}</version>
                 <configuration>
-                    <mainClass>frequency_dictionary.app</mainClass>
+                    <mainClass>frequency_dictionary.view</mainClass>
                 </configuration>
             </plugin>
         </plugins>
