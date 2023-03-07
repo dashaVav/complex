@@ -9,5 +9,9 @@
         <module name="java_homework" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="javafx-controls" target="19" />
+      <module name="sample-javafx" target="19" />
+    </bytecodeTargetLevel>
   </component>
 </project>
