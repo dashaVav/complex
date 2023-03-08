@@ -5,18 +5,18 @@ import javafx.geometry.Orientation;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
-import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.stage.Stage;
 
 /**
  * графический интерфейс
+ * запускает приложение
  */
-public class view extends Application{
+public class view extends Application {
 
     @Override
     public void start(Stage stage) {
-
         TextField inputField = new TextField();
         inputField.setTranslateX(110);
         inputField.setTranslateY(20);
@@ -47,4 +47,9 @@ public class view extends Application{
         stage.setTitle("App");
         stage.show();
     }
+
+    public static void main(String[] args) {
+        launch();
+    }
+
 }
