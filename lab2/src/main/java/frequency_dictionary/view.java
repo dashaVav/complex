@@ -5,6 +5,7 @@ import javafx.geometry.Orientation;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -31,25 +32,17 @@ public class view extends Application{
         btn.setTranslateX(110);
         btn.setTranslateY(20);
 
-        btn.setOnAction(event -> {
-            if(outputField.getText().isBlank()){
-                outputField.setText((new model(inputField.getText()).read()));
-            }
-            else{
-                outputField.setText((new model(inputField.getText(),outputField.getText()).read()));
-            }
+        Label lbl = new Label();
+        lbl.setTranslateX(110);
+        lbl.setTranslateY(30);
 
-        });
-        FlowPane root = new FlowPane(Orientation.VERTICAL, inputField, textIn,  outputField, textOut, btn);
+        btn.setOnAction(event -> lbl.setText((new model().count(inputField.getText(),outputField.getText()))));
+        FlowPane root = new FlowPane(Orientation.VERTICAL, inputField, textIn,  outputField, textOut, btn, lbl);
         Scene scene = new Scene(root, 400, 180);
 
         stage.setScene(scene);
 
-        stage.setTitle("frequency dictionary");
+        stage.setTitle("App");
         stage.show();
-    }
-
-    public static void main(String[] args) {
-        launch();
     }
 }
