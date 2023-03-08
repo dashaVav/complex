@@ -44,9 +44,6 @@ public class model {
     }
 
     private String write() {
-        if (new File(pathOut).exists()){
-            return "Файл уже существует";
-        }
         try (FileWriter writer = new FileWriter (pathOut)){
             writer.write(map.toString().replace(", ", "\n")
                     .replace("{", "")

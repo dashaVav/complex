@@ -9,9 +9,6 @@ import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 
-
-import static jdk.jfr.consumer.EventStream.openFile;
-
 public class view extends Application{
 
     @Override
