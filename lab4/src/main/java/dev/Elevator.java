@@ -9,6 +9,7 @@ import java.util.Map;
 @Setter
 @Getter
 public class Elevator {
+    private int id;
     private Direction direction;
     private int currentFloor = 1;
     private int targetFloor;
@@ -16,7 +17,8 @@ public class Elevator {
     private Map<Integer, Integer> passengers = new HashMap<>();
     private boolean isActive;
 
-    public Elevator(int maxCapacity) {
+    public Elevator(int id, int maxCapacity) {
+        this.id = id;
         this.maxCapacity = maxCapacity;
         isActive = false;
         targetFloor = 0;

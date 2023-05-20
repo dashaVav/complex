@@ -35,13 +35,13 @@ public class Building {
     }
 
     public synchronized void step(Elevator elevator){
-        System.out.printf("Лифт на %d этаже%n", elevator.getCurrentFloor());
+        System.out.printf("Лифт %d на %d этаже%n",elevator.getId(),  elevator.getCurrentFloor());
         Out(elevator);
         In(elevator);
 
-        if (elevator.getPassengers().isEmpty()) {
-            System.out.println("Лифт пуст на этаже " + elevator.getCurrentFloor());
-        }
+//        if (elevator.getPassengers().isEmpty()) {
+//            System.out.println("Лифт пуст на этаже " + elevator.getCurrentFloor());
+//        }
 
         if (queue.isEmpty() && elevator.getPassengers().isEmpty()){
             System.out.println("Очередь пассажиров пуста!");
@@ -50,12 +50,21 @@ public class Building {
         }
 
         if (!elevator.isActive()) {
-            Call call = queue.get(0);
-            elevator.setTargetFloor(call.getCurrentFloor());
-            if (call.getCurrentFloor() > elevator.getCurrentFloor()) elevator.setDirection(Direction.UP);
-            else elevator.setDirection(Direction.DOWN);
-            elevator.setActive(true);
+            for (Call value : queue) {
+                if (!value.isActive()) {
+                    value.setActive(true);
+                    Call call = value;
+                    elevator.setTargetFloor(call.getCurrentFloor());
+                    if (call.getCurrentFloor() > elevator.getCurrentFloor()) elevator.setDirection(Direction.UP);
+                    else elevator.setDirection(Direction.DOWN);
+                    elevator.setActive(true);
+//                    System.out.println("done");
+                    break;
+                }
+            }
         }
+
+        if (!elevator.isActive()) return;
 
         if (elevator.getDirection() == Direction.UP) {
             elevator.incrementFloor();
@@ -85,8 +94,8 @@ public class Building {
                     elevator.setTargetFloor(pas.getTargetFloor());
                 }
 
-                System.out.printf("Пассажир %d зашел в лифт на этаже %d и едет на этаж %d%n",
-                        pas.getId(), pas.getCurrentFloor(), pas.getTargetFloor());
+                System.out.printf("Пассажир %d зашел в %d лифт на этаже %d и едет на этаж %d%n",
+                        pas.getId(),elevator.getId(),  pas.getCurrentFloor(), pas.getTargetFloor());
                 callsForRemove.add(pas);
             }
         });
@@ -98,11 +107,11 @@ public class Building {
         List<Integer> keysForRemove = new ArrayList<>();
         for (Map.Entry<Integer, Integer> entry : elevator.getPassengers().entrySet()) {
             if (entry.getValue() == elevator.getCurrentFloor()) {
-                System.out.printf("Пассажир %d вышел на этаже %d%n", entry.getKey(), entry.getValue());
+                System.out.printf("Пассажир %d вышел %d на этаже %d%n", entry.getKey(),elevator.getId(),  entry.getValue());
                 keysForRemove.add(entry.getKey());
             }
         }
         keysForRemove.forEach(i -> elevator.getPassengers().remove(i));
-        if (elevator.getPassengers().isEmpty()) elevator.setActive(false);
+//        if (elevator.getPassengers().isEmpty()) elevator.setActive(false);
     }
 }
