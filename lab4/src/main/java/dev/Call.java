@@ -3,6 +3,9 @@ package dev;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Класс, который представляет заявку к лифту
+ */
 @Getter
 @Setter
 public class Call {
@@ -10,7 +13,6 @@ public class Call {
     private int currentFloor;
     private int id;
     private Direction direction;
-    private int  active = -1;
 
     public Call(int currentFloor, int targetFloor, int id) {
         this.targetFloor = targetFloor;

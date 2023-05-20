@@ -7,24 +7,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Класс, который представляет лифт
+ */
 @Setter
 @Getter
 public class Elevator {
     private int id;
-    private Direction directionNow;
-    private Direction directionAfter;
-    private int currentFloor = 1;
+    private Direction directionCurrent;
+    private Direction directionTarget;
+    private int currentFloor;
     private int targetFloor;
-    private int maxCapacity;
-    private Map<Integer, Integer> passengers = new HashMap<>();
+    private Map<Integer, Integer> passengersInElevator = new HashMap<>();
     private Map<Integer, List<Call>> queuePassengers = new HashMap<>();
 
-
-    public Elevator(int id, int maxCapacity) {
+    public Elevator(int id) {
         this.id = id;
-        this.maxCapacity = maxCapacity;
         targetFloor = 0;
-        directionNow = Direction.STOP;
+        currentFloor = 1;
+        directionCurrent = Direction.STOP;
     }
 
     public void incrementFloor(){
