@@ -9,16 +9,18 @@ public class Building {
     List<Call> queue = new ArrayList<>();
     Map<Integer, List<Call>> active = new HashMap<>();
 
-//
+    final Elevator elevator1 = new Elevator(1, 10);
+    final Elevator elevator2 = new Elevator(2, 10);
+
+
 //    public Building(){
 ////        addPassengersInQueue(new Call(1, 3, 1));
 ////        addPassengersInQueue(new Call(1, 4, 3));
-//        addPassengersInQueue(new Call(6, 1, 2));
-//        addPassengersInQueue(new Call(10, 6, 3));
+//        addPassengersInQueue(new Call(7, 3, 2));
+//        addPassengersInQueue(new Call(1, 6, 3));
 //
-//        Elevator elevator = new Elevator(10);
-//        while ((!queue.isEmpty() || !elevator.getPassengers().isEmpty()) && elevator.getCurrentFloor() < 20) {
-//            step(elevator);
+//        while (true) {
+//            run();
 //
 ////            if (elevator.getCurrentFloor() == 4) addPassengersInQueue(new Call(3, 1, 3));
 //        }
@@ -34,39 +36,36 @@ public class Building {
         System.out.printf("Пассажир %d ждет на этаже %d чтобы поехать на %d%n", call.getId(), call.getCurrentFloor(), call.getTargetFloor());
     }
 
+    public void run() {
+        step(elevator1);
+        step(elevator2);
+    }
+
+
     public synchronized void step(Elevator elevator){
         System.out.printf("Лифт %d на %d этаже%n",elevator.getId(),  elevator.getCurrentFloor());
+//        System.out.println(elevator.getTargetFloor());
+//        elevator.getQueuePassengers().forEach((p, c) -> System.out.print(p + " "));
+//        System.out.println();
         Out(elevator);
-        In(elevator);
+        updateQueue(elevator);
+        InElevator(elevator);
 
-//        if (elevator.getPassengers().isEmpty()) {
-//            System.out.println("Лифт пуст на этаже " + elevator.getCurrentFloor());
-//        }
-
-        if (queue.isEmpty() && elevator.getPassengers().isEmpty()){
-            System.out.println("Очередь пассажиров пуста!");
-            elevator.setActive(false);
-            return;
+        if (elevator.getDirectionNow() == Direction.STOP && !queue.isEmpty()) {
+            Call call = queue.remove(0);
+            elevator.setTargetFloor(call.getCurrentFloor());
+            if (!elevator.getQueuePassengers().containsKey(call.getCurrentFloor())) elevator.getQueuePassengers().put(call.getCurrentFloor(), new ArrayList<>());
+            elevator.getQueuePassengers().get(call.getCurrentFloor()).add(call);
+            if (call.getCurrentFloor() > elevator.getCurrentFloor()) elevator.setDirectionNow(Direction.UP);
+            else elevator.setDirectionNow(Direction.DOWN);
+            elevator.setDirectionAfter(call.getDirection());
+            updateQueue(elevator);
+            InElevator(elevator);
         }
 
-        if (!elevator.isActive()) {
-            for (Call value : queue) {
-                if (!value.isActive()) {
-                    value.setActive(true);
-                    Call call = value;
-                    elevator.setTargetFloor(call.getCurrentFloor());
-                    if (call.getCurrentFloor() > elevator.getCurrentFloor()) elevator.setDirection(Direction.UP);
-                    else elevator.setDirection(Direction.DOWN);
-                    elevator.setActive(true);
-//                    System.out.println("done");
-                    break;
-                }
-            }
-        }
+        if (elevator.getDirectionNow() == Direction.STOP) return;
 
-        if (!elevator.isActive()) return;
-
-        if (elevator.getDirection() == Direction.UP) {
+        if (elevator.getDirectionNow() == Direction.UP) {
             elevator.incrementFloor();
         }
         else {
@@ -74,36 +73,48 @@ public class Building {
         }
     }
 
-    private void In(Elevator elevator){
-        int currentFloor = elevator.getCurrentFloor();
-
-        if (!active.containsKey(currentFloor) || active.get(currentFloor).isEmpty()) return;
-
-        List<Call> callsForRemove = new ArrayList<>();
-
-        active.get(currentFloor).forEach(pas -> {
-            if (pas.getDirection() == elevator.getDirection() || elevator.getTargetFloor() == currentFloor) {
-                elevator.setActive(true);
-                elevator.setDirection(pas.getDirection());
-                elevator.getPassengers().put(pas.getId(), pas.getTargetFloor());
-
-                if (pas.getTargetFloor() > elevator.getTargetFloor() || elevator.getDirection() == Direction.UP) {
-                    elevator.setTargetFloor(pas.getTargetFloor());
+    private void updateQueue(Elevator elevator) {
+        if (elevator.getDirectionNow() != Direction.STOP) return;
+        if (elevator.getDirectionNow() == elevator.getDirectionAfter()) {
+            Iterator<Call> iterator = queue.iterator();
+            while (iterator.hasNext()) {
+                Call call = iterator.next();
+                if (call.getDirection() == elevator.getDirectionNow()) {
+                    if (call.getCurrentFloor() <= elevator.getCurrentFloor() && elevator.getDirectionNow() == Direction.DOWN
+                            || call.getCurrentFloor() >= elevator.getCurrentFloor() && elevator.getDirectionNow() == Direction.UP) {
+                        if (!elevator.getQueuePassengers().containsKey(call.getCurrentFloor())) elevator.getQueuePassengers().put(call.getCurrentFloor(), new ArrayList<>());
+                        elevator.getQueuePassengers().get(call.getCurrentFloor()).add(call);
+//                        elevator.getQueuePassengers().getOrDefault(call.getCurrentFloor(), new ArrayList<>()).add(call);
+                        iterator.remove();
+                    }
                 }
-                if (pas.getTargetFloor() < elevator.getTargetFloor() || elevator.getDirection() == Direction.DOWN) {
-                    elevator.setTargetFloor(pas.getTargetFloor());
-                }
-
-                System.out.printf("Пассажир %d зашел в %d лифт на этаже %d и едет на этаж %d%n",
-                        pas.getId(),elevator.getId(),  pas.getCurrentFloor(), pas.getTargetFloor());
-                callsForRemove.add(pas);
             }
-        });
-        queue.removeAll(callsForRemove);
-        active.get(currentFloor).removeAll(callsForRemove);
+        }
+    }
+
+    private void InElevator(Elevator elevator) {
+        if (elevator.getDirectionNow() == Direction.STOP) return;
+        if (!elevator.getQueuePassengers().containsKey(elevator.getCurrentFloor())) elevator.getQueuePassengers().put(elevator.getCurrentFloor(), new ArrayList<>());
+
+
+        Iterator<Call> iterator = elevator.getQueuePassengers().get(elevator.getCurrentFloor()).iterator();
+        while (iterator.hasNext()) {
+            Call call = iterator.next();
+            elevator.getPassengers().put(call.getId(), call.getTargetFloor());
+            elevator.setDirectionNow(call.getDirection());
+            if (elevator.getTargetFloor() < call.getTargetFloor() && elevator.getDirectionNow() == Direction.UP) elevator.setTargetFloor(call.getTargetFloor());
+            if (elevator.getTargetFloor() > call.getTargetFloor() && elevator.getDirectionNow() == Direction.DOWN) elevator.setTargetFloor(call.getTargetFloor());
+
+            System.out.printf("Пассажир %d зашел в %d лифт на этаже %d и едет на этаж %d%n",
+                    call.getId(), elevator.getId(),  call.getCurrentFloor(), call.getTargetFloor());
+            iterator.remove();
+        }
+        if (elevator.getQueuePassengers().get(elevator.getCurrentFloor()).isEmpty()) elevator.getQueuePassengers().remove(elevator.getCurrentFloor());
     }
 
     private void Out(Elevator elevator) {
+        if (elevator.getDirectionNow() == Direction.STOP) return;
+
         List<Integer> keysForRemove = new ArrayList<>();
         for (Map.Entry<Integer, Integer> entry : elevator.getPassengers().entrySet()) {
             if (entry.getValue() == elevator.getCurrentFloor()) {
@@ -112,6 +123,7 @@ public class Building {
             }
         }
         keysForRemove.forEach(i -> elevator.getPassengers().remove(i));
-//        if (elevator.getPassengers().isEmpty()) elevator.setActive(false);
+
+        if (elevator.getPassengers().isEmpty() && elevator.getQueuePassengers().isEmpty()) elevator.setDirectionNow(Direction.STOP);
     }
 }

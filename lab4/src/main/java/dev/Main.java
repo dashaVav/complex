@@ -37,18 +37,7 @@ public class Main {
                 building.addPassengersInQueue(new Call(currentFloor, targetFloor,idPassenger));
             }}, 0, 5, TimeUnit.SECONDS);
 
-        service.scheduleAtFixedRate(new Runnable() {
-            final Elevator elevator1 = new Elevator(1, 10);
-            final Elevator elevator2 = new Elevator(2, 10);
-            @Override
-            public void run() {
-//                System.out.println("+++");
-                building.step(elevator1);
-                building.step(elevator2);
-            }}, 0, 1, TimeUnit.SECONDS);
+        service.scheduleAtFixedRate(building::run, 0, 1, TimeUnit.SECONDS);
     }
-
-
-        //поток для лифтов
 
 }

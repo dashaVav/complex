@@ -10,7 +10,7 @@ public class Call {
     private int currentFloor;
     private int id;
     private Direction direction;
-    private boolean active = false;
+    private int  active = -1;
 
     public Call(int currentFloor, int targetFloor, int id) {
         this.targetFloor = targetFloor;
