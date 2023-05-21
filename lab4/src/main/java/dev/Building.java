@@ -23,14 +23,20 @@ public class Building {
      */
     public synchronized void addPassengersInQueue(Call call) {
         queuePassengers.add(call);
-        System.out.printf("Пассажир №%d ждет на этаже №%d%n", call.getId(), call.getCurrentFloor());
+        System.out.printf("Пассажир №%d ждет на этаже №%d - %d%n", call.getId(), call.getCurrentFloor(), call.getTargetFloor());
     }
 
     /**
-     * Изменение положения лифтов
+     * Изменение положения первого лифта
      */
-    public void run() {
+    public void run1() {
         step(elevator1, elevator2);
+    }
+
+    /**
+     * Изменение положения второго лифта
+     */
+    public void run2() {
         step(elevator2, elevator1);
     }
 
@@ -40,7 +46,7 @@ public class Building {
      * @param another лифт, который не будет двигаться
      */
     private synchronized void step(Elevator elevator, Elevator another){
-//        System.out.printf("Лифт №%d сейчас находится на этаже №%d %n",elevator.getId(),  elevator.getCurrentFloor());
+        System.out.printf("Лифт №%d сейчас находится на этаже №%d %n",elevator.getId(),  elevator.getCurrentFloor());
 
         Out(elevator);
         updateQueue(elevator);
@@ -73,7 +79,7 @@ public class Building {
             InElevator(elevator);
         }
 
-        // изменение этаж
+        // изменение этажа
         if (elevator.getDirectionCurrent() == Direction.STOP) return;
 
         if (elevator.getDirectionCurrent() == Direction.UP && elevator.getCurrentFloor() + 1 <= maxFloor) {

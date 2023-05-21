@@ -9,7 +9,7 @@ public class Main {
      * Запрашивает необходимую информацию.
      * Инициализирует здание, к котором будут двигаться лифты.
      * Запускает поток заявок к лифту.
-     * Запускает поток - движения лифтов.
+     * Запускает 2 потока - движения лифтов.
      */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -25,7 +25,8 @@ public class Main {
 
         Building building = new Building(maxFloor);
 
-        ScheduledExecutorService service = Executors.newScheduledThreadPool(2);
+        ScheduledExecutorService service = Executors.newScheduledThreadPool(3);
+        // заявки
         service.scheduleAtFixedRate(new Runnable() {
             int idPassenger = 0;
             @Override
@@ -39,7 +40,11 @@ public class Main {
                 building.addPassengersInQueue(new Call(currentFloor, targetFloor, idPassenger));
             }}, 0, interval, TimeUnit.SECONDS);
 
-        service.scheduleAtFixedRate(building::run, 0, 1, TimeUnit.SECONDS);
+        // первый лифт
+        service.scheduleAtFixedRate(building::run1, 0, 1, TimeUnit.SECONDS);
+
+        // второй лифт
+        service.scheduleAtFixedRate(building::run2, 0, 1, TimeUnit.SECONDS);
     }
 
 }

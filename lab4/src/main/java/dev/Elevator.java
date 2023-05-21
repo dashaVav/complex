@@ -36,15 +36,11 @@ public class Elevator {
         currentFloor --;
     }
 
-    public int getCurrentFloor(){
-        synchronized (this) {
-            return currentFloor;
-        }
+    public synchronized int getCurrentFloor(){
+        return currentFloor;
     }
 
-    public int getTargetFloor(){
-        synchronized (this) {
-            return targetFloor;
-        }
+    public synchronized int getTargetFloor(){
+        return targetFloor;
     }
 }
