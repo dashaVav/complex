@@ -23,7 +23,7 @@ public class Building {
      */
     public synchronized void addPassengersInQueue(Call call) {
         queuePassengers.add(call);
-        System.out.printf("Пассажир №%d ждет на этаже №%d - %d%n", call.getId(), call.getCurrentFloor(), call.getTargetFloor());
+        System.out.printf("Пассажир №%d ждет на этаже №%d%n", call.getId(), call.getCurrentFloor());
     }
 
     /**
